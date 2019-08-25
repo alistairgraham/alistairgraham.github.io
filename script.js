@@ -30,16 +30,13 @@ function initialise() {
   getLocation()
     .then(function(loc) {
       map1.setCenter({ lat: loc[0], lng: loc[1] })
-      map1.setZoom(15);
+      map1.setZoom(14);
       marker = new google.maps.Marker({
           position: { lat: loc[0], lng: loc[1] },
           map: map1
         });
-      //-41.285371399999995,174.7765366
-    //   console.log(loc[0])
-    //   console.log(loc[1])
-        // console.log(isPersonInDangerZone(loc[0], loc[1], latList, lngList))
-        console.log(isPersonInDangerZone(-41.285371399999995,174.7765366, latList, lngList))
+      isPersonInDangerZone(loc[0], loc[1], latList, lngList)
+      // isPersonInDangerZone(-41.285371399999995,174.7765366, latList, lngList)
     })
     .catch(function(err) { console.log("No location"); });
 
@@ -78,8 +75,6 @@ function initialise() {
             strokeWeight: 0.4
           }
         });
-        console.log(infowindow)
-        console.log(m)
         m.addListener('click', function() {
           infowindow.open(map1, m);
         });
@@ -136,8 +131,11 @@ function initialise() {
                 position: place.geometry.location,
                 map: map1
               });
+            if (directionsDisplay) {
               directionsDisplay.setDirections(null);
               directionsDisplay.setMap(null);
+            }
+            // debugger
             isPersonInDangerZone(place.geometry.location.lat(), place.geometry.location.lng(), latList, lngList);
             if (place.geometry.viewport) {
                 // Only geocodes have viewport.
