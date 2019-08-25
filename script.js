@@ -56,17 +56,17 @@ function initialise() {
         quakeCoords.push({lat: strongQuakes[i]['geometry']['coordinates'][1],
                           lng: strongQuakes[i]['geometry']['coordinates'][0]})
       }
-      document.getElementById("quakes").innerHTML =
-        "<table style='width:100%'><tr>" +
-      "<th>Time</th>" +
-      "<th>Magnitude (1-10)</th></tr>"
-      +table+"</table>"
 
       var quakeMarkers = []
       for (var i=0; i<quakeCoords.length; i++) {
-        new google.maps.Marker({
+        var content = "Strength (1-10): " + String(strongQuakes[i]['properties']['mmi'])
+        var infowindow = new google.maps.InfoWindow({
+          content: content
+        });
+        var m = new google.maps.Marker({
           position: quakeCoords[i],
           map: map1,
+          title: 'Earthquake',
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
             scale: 8.5,
@@ -74,6 +74,11 @@ function initialise() {
             fillOpacity: 0.4,
             strokeWeight: 0.4
           }
+        });
+        console.log(infowindow)
+        console.log(m)
+        m.addListener('click', function() {
+          infowindow.open(map1, m);
         });
       }
 
@@ -300,12 +305,11 @@ function getQuakeData(url, callback) {
 
 function processQuakes(quakes) {
   var features = quakes['features']
-  console.log(features)
   var strongQuakes = []
   for (var i=0; i<features.length; i++) {
     if (features[i]['properties']['mmi'] >= 2) {
       strongQuakes.push(features[i])
     }
   }
-  return strongQuakes.slice(0,4);
+  return strongQuakes.slice(0,25);
 }
